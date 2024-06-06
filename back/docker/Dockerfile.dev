@@ -1,5 +1,5 @@
 # Use node as the base image
-FROM node:18-alpine
+FROM node:20.13.1-alpine
 # Update npm to version 7
 RUN npm i -g npm@8.1.2
 
@@ -7,22 +7,18 @@ RUN npm i -g npm@8.1.2
 WORKDIR /app
 
 # Copy files specifying dependencies
-COPY package.json ./
-COPY package-lock.json ./
+COPY package*.json ./
 
 # Install dependencies
 COPY .npmrc ./
 RUN yarn install --check-files
 
-
-
 # Copy all the files
 COPY . .
 
 # Expose the port the server listens to
-EXPOSE 3005
+EXPOSE 3001
 
 # Make server to serve admin built files
-# ENV SERVE_STATIC_ROOT_PATH=admin-ui/build
 
-CMD ["npm" , "run" ,"start:debug"]
+CMD ["npm" , "run" ,"start"]

@@ -1,0 +1,14 @@
+
+tasks:
+  - name: install dependencies, populate .env file and setup process
+    command: |
+      cp /front/.env.example .env
+      cp /back/.env.example .env
+      echo "API_URL=$(gp url 3001)" >> /front/.env
+      docker-compose --profile dev up -d --build
+
+ports:
+  - port: 3000
+    visibility: public
+  - port: 3001
+    visibility: public
