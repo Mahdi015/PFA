@@ -1,14 +1,8 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { listUsers } from "../../functions/admin";
-import { formatDistance, subDays } from "date-fns";
-import { Container } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import { listUsers, deleteUser } from "../../functions/admin";
+import { formatDistanceToNow } from "date-fns";
+import { Container, Button } from "@mui/material";
 
 export default function ListUsers() {
   const [userData, setUserData] = React.useState([]);
@@ -17,45 +11,79 @@ export default function ListUsers() {
     const res = await listUsers();
     if (res.data) {
       setUserData(res.data);
-      console.log(userData);
     }
   };
+
   React.useEffect(() => {
     getUsersData();
   }, []);
+
+  const columns = [
+    {
+      field: "fullName",
+      headerName: "Nom",
+      width: 200,
+    },
+    {
+      field: "created_at",
+      headerName: "Date de création",
+      width: 200,
+      valueGetter: (value) => {
+        const date = new Date(value);
+        return isNaN(date.getTime())
+          ? ""
+          : formatDistanceToNow(date, { addSuffix: true });
+      },
+    },
+    {
+      field: "status",
+      headerName: "Statut",
+      width: 150,
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 400,
+      renderCell: (params) => (
+        <div style={{ padding: '0 16px', height: '100%', display: 'flex', flexDirection: 'row', gap: '30px', alignItems: 'center' }}>
+          <Button variant="contained" color="primary" onClick={() => handleModifier(params.row.id)}>
+            Modifier
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => handleDeleteUser(params.row.id)}
+          >
+            Supprimer
+          </Button>
+        </div>
+      ),
+      
+    },
+  ];
+
+  const handleDeleteUser = async (userId: string) => {
+    await deleteUser(userId);
+    getUsersData();
+  };
+
+  const handleModifier = (userId) => {
+    // Handle modifier button click
+    console.log("Modifier clicked for user ID:", userId);
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: "100%" }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Full name</TableCell>
-              <TableCell>Created at</TableCell>
-              <TableCell>Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {userData.map((row: any, index) => (
-              <TableRow
-                key={index}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.fullName}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {formatDistance(subDays(new Date(), 3), row.created_at, {
-                    addSuffix: true,
-                  })}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {row.status}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <div style={{ height: 600, width: "100%" }}>
+        <DataGrid
+          rows={userData}
+          columns={columns}
+          pageSize={10}
+          rowsPerPageOptions={[10]}
+          disableSelectionOnClick
+          getRowId={(row) => row.id || row._id}
+        />
+      </div>
     </Container>
   );
 }
