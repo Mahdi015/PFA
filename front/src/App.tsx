@@ -6,9 +6,9 @@ import * as React from "react";
 import AdminLayout from "./layout/AdminLayout";
 import ListUsers from "./views/admin/ListUsers";
 import { ProtectedRoute } from "./functions/admin";
+import ListDoorHistory from "./views/admin/ListDoorHistory";
 
 function App() {
-
   return (
     <Router>
       <Routes>
@@ -26,6 +26,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <ListUsers />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/door_history"
+            element={
+              <ProtectedRoute>
+                <ListDoorHistory />
               </ProtectedRoute>
             }
           />

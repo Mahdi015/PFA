@@ -11,15 +11,15 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import { Outlet } from "react-router-dom";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { useNavigate } from "react-router-dom";
-
+import RestoreIcon from "@mui/icons-material/Restore";
 import { ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 const drawerWidth: number = 240;
 
@@ -74,6 +74,7 @@ const Drawer = styled(MuiDrawer, {
 const AdminLayout = () => {
   const defaultTheme = createTheme();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogOut = () => {
     localStorage.removeItem("access_token");
@@ -84,6 +85,9 @@ const AdminLayout = () => {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  const isCurrentPath = (path: string) => path == location.pathname;
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
@@ -130,18 +134,61 @@ const AdminLayout = () => {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <ListItemButton onClick={() => navigate("/")}>
+            <ListItemButton
+              style={isCurrentPath("/") ? { backgroundColor: "#bbc6d2 " } : {}}
+              onClick={() => navigate("/")}
+            >
               <ListItemIcon>
-                <DashboardIcon />
+                <DashboardIcon
+                  color={isCurrentPath("/") ? "primary" : "inherit"}
+                />
               </ListItemIcon>
-              <ListItemText primary="Tableau de bord" />
+              <ListItemText
+                style={isCurrentPath("/") ? { color: "#1976D2 " } : {}}
+                primary="Tableau de bord"
+              />
             </ListItemButton>
 
-            <ListItemButton onClick={() => navigate("/list_users")}>
+            <ListItemButton
+              style={
+                isCurrentPath("/list_users")
+                  ? { backgroundColor: "#bbc6d2 " }
+                  : {}
+              }
+              onClick={() => navigate("/list_users")}
+            >
               <ListItemIcon>
-                <FormatListNumberedIcon />
+                <FormatListNumberedIcon
+                  color={isCurrentPath("/list_users") ? "primary" : "inherit"}
+                />
               </ListItemIcon>
-              <ListItemText primary="Liste des utilisateurs" />
+              <ListItemText
+                style={
+                  isCurrentPath("/list_users") ? { color: "#1976D2 " } : {}
+                }
+                primary="Liste des utilisateurs"
+              />
+            </ListItemButton>
+
+            <ListItemButton
+              style={
+                isCurrentPath("/door_history")
+                  ? { backgroundColor: "#bbc6d2 " }
+                  : {}
+              }
+              onClick={() => navigate("/door_history")}
+            >
+              <ListItemIcon>
+                <RestoreIcon
+                  color={isCurrentPath("/door_history") ? "primary" : "inherit"}
+                />
+              </ListItemIcon>
+              <ListItemText
+                style={
+                  isCurrentPath("/door_history") ? { color: "#1976D2 " } : {}
+                }
+                primary="Historique d'activité"
+              />
             </ListItemButton>
           </List>
         </Drawer>

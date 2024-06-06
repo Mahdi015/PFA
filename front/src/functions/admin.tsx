@@ -21,6 +21,16 @@ export const updateUser = async (userData: object) => {
   await axios.patch(`${process.env.REACT_APP_API_URL}/users`, userData);
 };
 
+
+//DoorHistory
+
+export const listDoorHistorys = async () =>
+  await axios.get(`${process.env.REACT_APP_API_URL}/door_history`, {});
+
+export const deleteDoorHistory = async (doorHistoryId: string) => {
+  await axios.delete(`${process.env.REACT_APP_API_URL}/door_history/${doorHistoryId}`, {});
+};
+
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (!localStorage.getItem("access_token")) {
     return <Navigate to="/login" replace />;
