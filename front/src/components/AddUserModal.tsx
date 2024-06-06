@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { Box, Button, Modal, TextField } from "@mui/material";
 import { addUser } from "../functions/admin";
 
@@ -7,13 +6,11 @@ interface AddUserModalProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  getUsersData: () => Promise<void>;
 }
 
 export default function AddUserModal({
   showModal,
   setShowModal,
-  getUsersData,
   setIsLoading,
 }: AddUserModalProps) {
   const [userName, setUserName] = React.useState("");
@@ -32,7 +29,6 @@ export default function AddUserModal({
   const handleAddUser = async () => {
     setIsLoading(true);
     await addUser(userName).then(() => {
-      getUsersData();
       setShowModal(false);
       setIsLoading(false);
     });

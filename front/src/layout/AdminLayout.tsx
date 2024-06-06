@@ -171,7 +171,7 @@ const AdminLayout = () => {
                   color={isCurrentPath("/list_users") ? "primary" : "inherit"}
                 />
               </ListItemIcon>
-              <ListItemText primary="Liste des utilisateurs" />
+              <ListItemText primary="Utilisateurs" />
             </ListItemButton>
 
             <ListItemButton
@@ -191,7 +191,7 @@ const AdminLayout = () => {
                   color={isCurrentPath("/door_history") ? "primary" : "inherit"}
                 />
               </ListItemIcon>
-              <ListItemText primary="Historique d'activité" />
+              <ListItemText primary="Historique" />
             </ListItemButton>
           </List>
         </Drawer>

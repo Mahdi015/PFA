@@ -1,7 +1,6 @@
 import * as React from "react";
-
-import { Box, Button, Modal, TextField } from "@mui/material";
-import { addUser, updateUser } from "../functions/admin";
+import { Box, Button, Modal, TextField, Switch } from "@mui/material";
+import { updateUser } from "../functions/admin";
 
 interface IEditUserModal {
   showUpdateModal: boolean;
@@ -22,15 +21,20 @@ export default function EditUserModal({
     fullName: "",
     status: "",
     userId: "",
+    start_time: "",
+    end_time: "",
   });
+
   React.useEffect(() => {
-    console.log("userToUpdate", userToUpdate);
     setForm({
-      fullName: userToUpdate?.fullName,
-      status: userToUpdate?.status,
-      userId: userToUpdate?.id,
+      fullName: userToUpdate?.fullName || "",
+      status: userToUpdate?.status || "",
+      userId: userToUpdate?.id || "",
+      start_time: userToUpdate?.start_time || "",
+      end_time: userToUpdate?.end_time || "",
     });
   }, [userToUpdate]);
+
   const modalStyle = {
     position: "absolute" as "absolute",
     top: "50%",
@@ -58,7 +62,16 @@ export default function EditUserModal({
     const { name, value } = e.target;
     setForm((prevForm) => ({
       ...prevForm,
-      [name]: value,
+      [name]: value || null,
+    }));
+  };
+
+  const handleToggleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setForm((prevForm) => ({
+      ...prevForm,
+      status: e.target.checked ? "Activated" : "Deactivated",
     }));
   };
 
@@ -83,15 +96,39 @@ export default function EditUserModal({
             onChange={handleChange}
           />
 
+          <span>Status</span><br/>
+          <Switch
+            checked={form.status === "Activated"}
+            onChange={handleToggleChange}
+            name="status"
+            color="primary"
+          />
+
           <TextField
             margin="normal"
-            required
             fullWidth
-            id="status"
-            label="Statut"
-            name="status"
-            autoComplete="status"
-            value={form.status}
+            id="start_time"
+            label="Start Time"
+            type="time"
+            name="start_time"
+            value={form.start_time || ""}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={handleChange}
+          />
+
+          <TextField
+            margin="normal"
+            fullWidth
+            id="end_time"
+            label="End Time"
+            type="time"
+            name="end_time"
+            value={form.end_time || ""}
+            InputLabelProps={{
+              shrink: true,
+            }}
             onChange={handleChange}
           />
 

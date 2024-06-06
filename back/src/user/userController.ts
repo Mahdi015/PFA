@@ -12,7 +12,6 @@ export const getUsers = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-
   if (!id) {
     return res.status(400).json({ error: "User ID is required" });
   }
@@ -26,6 +25,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error: any) {
+    console.log('HERE')
     res.status(400).json({ error: error.message });
   }
 };
@@ -53,7 +53,7 @@ export const addUser = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const { fullName, status, userId } = req.body;
+  const { fullName, status, userId, start_time, end_time } = req.body;
 
   if (!req.body) {
     return res.status(400).json({ error: "Fiels missing" });
@@ -62,7 +62,7 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const { error } = await supabase
       .from("User")
-      .update({ fullName, status })
+      .update({ fullName, status, start_time: start_time?.length > 0 ? start_time : null, end_time: end_time?.length > 0 ? end_time : null })
       .eq("id", userId);
 
     if (error) {

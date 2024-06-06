@@ -3,14 +3,11 @@ import { DataGrid } from "@mui/x-data-grid";
 import { listUsers, deleteUser } from "../../functions/admin";
 import { formatDistanceToNow } from "date-fns";
 import { Container, Button } from "@mui/material";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import AddUserModal from "../../components/AddUserModal";
 import { fr } from "date-fns/locale";
 import EditUserModal from "../../components/EditUserModal";
 
 export default function ListUsers() {
   const [userData, setUserData] = React.useState([]);
-  const [showModal, setShowModal] = React.useState(false);
   const [showUpdateModal, setShowUpdateModal] = React.useState(false);
 
   const [isLoading, setIsLoading] = React.useState(false);
@@ -45,9 +42,42 @@ export default function ListUsers() {
       },
     },
     {
+      field: "start_time",
+      headerName: "Temp de debut",
+      width: 200,
+      valueGetter: (value: any) => {
+        return value === null
+          ? ""
+          : value
+      },
+    },
+    {
+      field: "end_time",
+      headerName: "Temp de fin",
+      width: 200,
+      valueGetter: (value: any) => {
+        return value === null
+          ? ""
+          : value
+      },
+    },
+    {
       field: "status",
       headerName: "Statut",
       width: 150,
+      renderCell: (params: any) => (
+        <div style={{ display: 'flex', flexDirection: "row", alignItems: 'center', gap: '15px' }}>
+          <div
+            style={{
+              width: 8,
+              height: 8,
+              backgroundColor: params.row.status == "Activated" ? "green" : "red",
+              borderRadius: 50,
+            }}
+          ></div>
+          <span>{params.row.status}</span>
+        </div>
+      ),
     },
     {
       field: "action",
@@ -107,13 +137,6 @@ export default function ListUsers() {
           justifyContent: "end",
         }}
       >
-        <Button
-          onClick={() => setShowModal(true)}
-          variant="contained"
-          endIcon={<PersonAddAltIcon />}
-        >
-          Ajouter un utilisateur
-        </Button>
       </Container>
       <div style={{ height: "auto", width: "100%" }}>
         <DataGrid
@@ -131,12 +154,6 @@ export default function ListUsers() {
           disableRowSelectionOnClick
         />
       </div>
-      <AddUserModal
-        showModal={showModal}
-        setShowModal={setShowModal}
-        getUsersData={getUsersData}
-        setIsLoading={setIsLoading}
-      />
       <EditUserModal
         showUpdateModal={showUpdateModal}
         setShowUpdateModal={setShowUpdateModal}
