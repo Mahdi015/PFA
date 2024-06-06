@@ -13,8 +13,8 @@ export const deleteUser = async (userId: string) => {
   await axios.delete(`${process.env.REACT_APP_API_URL}/users/${userId}`, {});
 };
 
-export const addUser = async (fullName: string) => {
-  await axios.post(`${process.env.REACT_APP_API_URL}/users`, { fullName });
+export const addUser = async (userData: any) => {
+  await axios.post(`${process.env.REACT_APP_API_URL}/users`, userData);
 };
 
 export const updateUser = async (userData: object) => {

@@ -6,6 +6,13 @@ import { Container, Button } from "@mui/material";
 import { fr } from "date-fns/locale";
 import EditUserModal from "../../components/EditUserModal";
 
+function formatDateToDDMMYYYY(date) {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 export default function ListUsers() {
   const [userData, setUserData] = React.useState([]);
   const [showUpdateModal, setShowUpdateModal] = React.useState(false);
@@ -29,42 +36,6 @@ export default function ListUsers() {
       field: "fullName",
       headerName: "Nom",
       width: 200,
-    },
-    {
-      field: "created_at",
-      headerName: "Date de création",
-      width: 200,
-      valueGetter: (value: any) => {
-        const date = new Date(value);
-        return isNaN(date.getTime())
-          ? ""
-          : formatDistanceToNow(date, { addSuffix: true, locale: fr });
-      },
-    },
-    {
-      field: "start_time",
-      headerName: "Temp de debut",
-      width: 200,
-      valueGetter: (value: any) => {
-        return value === null
-          ? ""
-          : value
-      },
-    },
-    {
-      field: "end_time",
-      headerName: "Temp de fin",
-      width: 200,
-      valueGetter: (value: any) => {
-        return value === null
-          ? ""
-          : value
-      },
-    },
-    {
-      field: "status",
-      headerName: "Statut",
-      width: 150,
       renderCell: (params: any) => (
         <div style={{ display: 'flex', flexDirection: "row", alignItems: 'center', gap: '15px' }}>
           <div
@@ -75,13 +46,44 @@ export default function ListUsers() {
               borderRadius: 50,
             }}
           ></div>
-          <span>{params.row.status}</span>
+          <span>{params.row.fullName}</span>
         </div>
       ),
     },
     {
+      field: "created_at",
+      headerName: "Date de création",
+      width: 200,
+      valueGetter: (value: any) => {
+        const date = new Date(value);
+        return isNaN(date.getTime())
+          ? ""
+          : formatDateToDDMMYYYY(date);
+      },
+    },
+    {
+      field: "start_time",
+      headerName: "Debut",
+      width: 100,
+      valueGetter: (value: any) => {
+        return value === null
+          ? ""
+          : value
+      },
+    },
+    {
+      field: "end_time",
+      headerName: "Fin",
+      width: 100,
+      valueGetter: (value: any) => {
+        return value === null
+          ? ""
+          : value
+      },
+    },
+    {
       field: "action",
-      headerName: "Action",
+      headerName: "Actions",
       width: 400,
       renderCell: (params: any) => (
         <div

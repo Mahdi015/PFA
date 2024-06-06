@@ -2,26 +2,26 @@ import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { listDoorHistorys, deleteDoorHistory } from "../../functions/admin";
 import { formatDistanceToNow } from "date-fns";
-import { Container, Button } from "@mui/material";
+import { Container, Button, Modal, Box } from "@mui/material";
 
 import { fr } from "date-fns/locale";
 
 export default function ListDoorHistory() {
   const [doorHistoryData, setDoorHistoryData] = React.useState([]);
-
+  const [selectedImage, setSelectedImage] = React.useState(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const getDoorHistoryData = async () => {
     const res = await listDoorHistorys();
     if (res.data) {
-      console.log("a", res.data);
-      const formedData = res.data.map((item: any) => ({
+      const formedData = res.data.map((item) => ({
         id: item.id,
         fullName: item.User.fullName,
         capture_date: item.capture_date,
         action: item.action,
+        image_url: item.image_url,
       }));
-
       setDoorHistoryData(formedData);
     }
   };
@@ -30,12 +30,22 @@ export default function ListDoorHistory() {
     getDoorHistoryData();
   }, []);
 
-  const handleDeleteDoorHistory = async (doorHistoryId: string) => {
+  const handleDeleteDoorHistory = async (doorHistoryId) => {
     setIsLoading(true);
     await deleteDoorHistory(doorHistoryId).then(() => {
       getDoorHistoryData();
       setIsLoading(false);
     });
+  };
+
+  const handleOpenImage = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage(null);
+    setIsModalOpen(false);
   };
 
   const columns = [
@@ -46,21 +56,28 @@ export default function ListDoorHistory() {
     },
     {
       field: "capture_date",
-      headerName: "Date de création",
+      headerName: "Date de détection",
       width: 200,
-      valueGetter: (value: any) => {
+      valueGetter: (value) => {
         const date = new Date(value);
         return isNaN(date.getTime())
           ? ""
-          : formatDistanceToNow(date, { addSuffix: true, locale: fr });
+          : date.toLocaleDateString("fr-FR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+            });
       },
     },
     {
       field: "action",
-      headerName: "Action",
+      headerName: "Statut d'accès",
       width: 150,
-      renderCell: (params: any) => {
-        return params.value === "active" ? (
+      renderCell: (params) => {
+        return (
           <div
             style={{
               display: "flex",
@@ -73,30 +90,12 @@ export default function ListDoorHistory() {
               style={{
                 width: 8,
                 height: 8,
-                backgroundColor: params.value == "GRANTED" ? "green" : "red",
+                backgroundColor:
+                  params.value === "GRANTED" ? "green" : "red",
                 borderRadius: 50,
               }}
             ></div>
-            {params.value}
-          </div>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "start",
-              alignItems: "center",
-              gap: 5,
-            }}
-          >
-            <div
-              style={{
-                width: 8,
-                height: 8,
-                backgroundColor: params.value == "GRANTED" ? "green" : "red",
-                borderRadius: 50,
-              }}
-            ></div>
-            {params.value}
+            {params.value === "GRANTED" ? 'ACCORDE' : 'INTERDIT'}
           </div>
         );
       },
@@ -105,7 +104,7 @@ export default function ListDoorHistory() {
       field: "actions",
       headerName: "Actions",
       width: 400,
-      renderCell: (params: any) => (
+      renderCell: (params) => (
         <div
           style={{
             padding: "0 16px",
@@ -122,6 +121,14 @@ export default function ListDoorHistory() {
             onClick={() => handleDeleteDoorHistory(params.row.id)}
           >
             Supprimer
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!params.row.image_url}
+            onClick={() => handleOpenImage(params.row.image_url)}
+          >
+            Voir Image
           </Button>
         </div>
       ),
@@ -141,11 +148,16 @@ export default function ListDoorHistory() {
             },
           }}
           pageSizeOptions={[10]}
-          getRowId={(row: any) => row.id || row._id}
+          getRowId={(row) => row.id || row._id}
           disableMultipleRowSelection
           disableRowSelectionOnClick
         />
       </div>
+      <Modal open={isModalOpen} onClose={handleCloseModal} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Box sx={{ width: "auto", maxWidth: "90vw", maxHeight: "90vh", bgcolor: "background.paper", p: 2 }}>
+          <img src={selectedImage} alt="Door Image" style={{ maxWidth: "400px" }} />
+        </Box>
+      </Modal>
     </Container>
   );
 }

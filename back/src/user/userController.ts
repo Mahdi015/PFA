@@ -31,16 +31,10 @@ export const deleteUser = async (req: Request, res: Response) => {
 };
 
 export const addUser = async (req: Request, res: Response) => {
-  const { fullName } = req.body;
-
-  if (!fullName) {
-    return res.status(400).json({ error: "Username is required" });
-  }
-
   try {
     const { error } = await supabase
       .from("User")
-      .insert({ fullName, status: "Activated" });
+      .insert({ ...req.body });
 
     if (error) {
       throw error;
