@@ -15,8 +15,8 @@ app.use('/users', userRoutes);
 app.use('/door_history', doorHistoryRoutes);
 
 app.listen(PORT, async () => {
-  await seedUsers();
-  await seedDoorHistory();
+  // await seedUsers();
+  // await seedDoorHistory();
 
   console.log(`Server is running on PORT: ${PORT}`);
 });
