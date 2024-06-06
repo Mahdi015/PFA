@@ -26,9 +26,7 @@ const drawerWidth: number = 240;
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
-interface DashboardProps {
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-}
+
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })<AppBarProps>(({ theme, open }) => ({
@@ -73,7 +71,7 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-const AdminLayout = ({ setShowModal }: DashboardProps) => {
+const AdminLayout = () => {
   const defaultTheme = createTheme();
   const navigate = useNavigate();
 
@@ -137,13 +135,6 @@ const AdminLayout = ({ setShowModal }: DashboardProps) => {
                 <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Tableau de bord" />
-            </ListItemButton>
-
-            <ListItemButton onClick={() => setShowModal(true)}>
-              <ListItemIcon>
-                <PersonAddAltIcon />
-              </ListItemIcon>
-              <ListItemText primary="Ajouter un utilisateur" />
             </ListItemButton>
 
             <ListItemButton onClick={() => navigate("/list_users")}>

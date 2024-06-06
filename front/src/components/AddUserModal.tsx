@@ -1,16 +1,22 @@
 import * as React from "react";
 
 import { Box, Button, Modal, TextField } from "@mui/material";
+import { addUser } from "../functions/admin";
 
 interface AddUserModalProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  getUsersData: () => Promise<void>;
 }
 
 export default function AddUserModal({
   showModal,
   setShowModal,
+  getUsersData,
+  setIsLoading,
 }: AddUserModalProps) {
+  const [userName, setUserName] = React.useState("");
   const modalStyle = {
     position: "absolute" as "absolute",
     top: "50%",
@@ -21,6 +27,15 @@ export default function AddUserModal({
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+  };
+
+  const handleAddUser = async () => {
+    setIsLoading(true);
+    await addUser(userName).then(() => {
+      getUsersData();
+      setShowModal(false);
+      setIsLoading(false);
+    });
   };
 
   return (
@@ -40,13 +55,14 @@ export default function AddUserModal({
             label="Username"
             name="username"
             autoComplete="username"
+            onChange={(e) => setUserName(e.target.value)}
           />
 
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            onClick={handleAddUser}
           >
             Ajouter utilisateur
           </Button>
