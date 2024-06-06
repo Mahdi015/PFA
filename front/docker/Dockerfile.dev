@@ -1,8 +1,8 @@
-# Use the official Node.js 14 image as base
-FROM node:14 as build
+# Use an official Node.js runtime as a parent image
+FROM node:20.13.1-alpine
 
-# Set working directory in the container
-WORKDIR /usr/src/app
+# Set the working directory in the container
+WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
@@ -13,11 +13,8 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Build the React app
-RUN npm run build
+# Make port 3000 available to the world outside this container
+EXPOSE 3000
 
-# Serve the React app using Nginx
-FROM nginx:alpine
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Start the application
+CMD ["npm", "run", "start"]

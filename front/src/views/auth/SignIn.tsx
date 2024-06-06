@@ -5,8 +5,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
@@ -19,10 +17,6 @@ import { Alert } from "@mui/material";
 
 // Load environment variables from .env file
 dotenv.config();
-
-const supabaseUrl = "https://zoyearzeplakofnlpwbl.supabase.co";
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpveWVhcnplcGxha29mbmxwd2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc2MDEyOTAsImV4cCI6MjAzMzE3NzI5MH0.jT-FjXdISIOixyVn2T-Gsd9B13UFGtz5I6YjLZLyoB8";
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL as string,
@@ -51,8 +45,7 @@ export default function SignIn() {
         email,
         password,
       })
-      .then((data) => {
-        console.log("data", data);
+      .then((data: any) => {
         if (data.data) {
           setShowLogin(true);
         }

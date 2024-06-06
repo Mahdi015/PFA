@@ -1,64 +1,29 @@
-version: "3.8"
+version: '3.8'
+
 services:
-  vue-app-dev-client:
-    profiles: ["dev"]
+  front:
     build:
       context: ./front
       dockerfile: docker/Dockerfile.dev
     volumes:
-      - ./front/src:/app/src
+      - ./front:/app
+      - /app/node_modules
     ports:
-      - 3001:3001
-    tty: true
-    stdin_open: true
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev
 
-  server-dev:
-    profiles: ["dev"]
-    restart: unless-stopped
-    image: ${CI_REGISTRY_IMAGE:-web_app}/server:${CI_COMMIT_SHORT_SHA:-latest}
-    networks:
-      default:
-        aliases:
-          - server
-    build:
-      context: ./server
-      dockerfile: docker/Dockerfile.dev
-      args:
-        NPM_LOG_LEVEL: notice
-    volumes:
-      - ./server/src:/app/src
-    environment:
-      POSTGRESQL_URL: "postgres://${CLIENT_POSTGRESQL_USER}:${CLIENT_POSTGRESQL_PASSWORD}@db"
-
-  db:
-    profiles: ["dev"]
-    image: supabase/postgres:14.1.0.77
-    command:
-      - postgres
-      - -c
-      - config_file=/etc/postgresql/postgresql.conf
-      - -c
-      - log_min_messages=fatal
-    restart: unless-stopped
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
-    volumes:
-      - /var/lib/postgresql/data
-      - ./docker/supabase/volumes/db/init:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-  studio:
-    profiles: [ "dev"]
-    image: supabase/studio:20230512-ad596d8
-    restart: unless-stopped
-    environment:
-      SUPABASE_URL: http://kong:8000
-      SUPABASE_REST_URL: ${API_URL}/rest/v1/
-      STUDIO_PG_META_URL: http://meta:8080
-      SUPABASE_ANON_KEY: ${ANON_KEY}
-      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
-volumes:
-  postgres: ~
+  # back:
+  #   build:
+  #     context: ./back
+  #   volumes:
+  #     - ./back:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - "4000:4000"
+  #   environment:
+  #     - NODE_ENV=development
+  #   profiles:
+  #     - dev

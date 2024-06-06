@@ -88,6 +88,12 @@ const defaultTheme = createTheme();
 export default function AdminDashboard() {
   const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
+  
+  React.useEffect(() => {
+    if (!localStorage.getItem("access_token")) {
+      navigate("/login");
+    }
+  }, [])
 
   const toggleDrawer = () => {
     setOpen(!open);
