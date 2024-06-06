@@ -10,8 +10,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-COPY .npmrc ./
-RUN yarn install --check-files
+RUN npm install
 
 # Copy all the files
 COPY . .

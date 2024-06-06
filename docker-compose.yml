@@ -15,15 +15,16 @@ services:
     profiles:
       - dev
 
-  # back:
-  #   build:
-  #     context: ./back
-  #   volumes:
-  #     - ./back:/app
-  #     - /app/node_modules
-  #   ports:
-  #     - "4000:4000"
-  #   environment:
-  #     - NODE_ENV=development
-  #   profiles:
-  #     - dev
+  back:
+    build:
+      context: ./back
+      dockerfile: docker/Dockerfile.dev
+    volumes:
+      - ./back:/app
+      - /app/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev
