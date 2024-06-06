@@ -1,85 +1,146 @@
-import React from "react";
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createClient } from "@supabase/supabase-js";
+import { useNavigate } from "react-router-dom";
+import dotenv from "dotenv";
+import { Alert } from "@mui/material";
+
+// Load environment variables from .env file
+dotenv.config();
 
 const supabaseUrl = "https://zoyearzeplakofnlpwbl.supabase.co";
 const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpveWVhcnplcGxha29mbmxwd2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc2MDEyOTAsImV4cCI6MjAzMzE3NzI5MH0.jT-FjXdISIOixyVn2T-Gsd9B13UFGtz5I6YjLZLyoB8";
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(
+  process.env.REACT_APP_SUPABASE_URL as string,
+  process?.env?.REACT_APP_SUPABASE_ANON_KEY as string
+);
 
-function SignIn() {
-  const handleSignIn = async () => {
+const defaultTheme = createTheme();
+
+export default function SignIn() {
+  const navigate = useNavigate();
+  const [showLogin, setShowLogin] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  React.useEffect(() => {
+    if (localStorage.getItem("access_token")) {
+      navigate("/admin");
+    }
+  }, []);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setShowLogin(false);
+    event.preventDefault();
     await supabase.auth
       .signInWithPassword({
-        email: "test@test.test",
-        password: "test",
+        email,
+        password,
       })
       .then((data) => {
-        console.log(data);
+        console.log("data", data);
+        if (data.data) {
+          setShowLogin(true);
+        }
+        if (data.data.session?.access_token) {
+          localStorage.setItem("access_token", data.data.session?.access_token);
+          navigate("/admin");
+        }
       });
   };
+
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <div style={styles.container}>
-        <h2 style={styles.heading}>Sign In</h2>
-        <form>
-          <div style={styles.formGroup}>
-            <label htmlFor="email">Email Address</label>
-            <input type="email" id="email" name="email" style={styles.input} />
-          </div>
-          <div style={styles.formGroup}>
-            <label htmlFor="password">Password</label>
-            <input
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 18,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
+            {showLogin && (
+              <Alert severity="error">Invalid login credentials </Alert>
+            )}{" "}
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              onChange={(v) => setEmail(v.target.value)}
+              value={email}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
               type="password"
               id="password"
-              name="password"
-              style={styles.input}
+              onChange={(v) => setPassword(v.target.value)}
+              value={password}
+              autoComplete="current-password"
             />
-          </div>
-          <button onClick={handleSignIn} style={styles.button}>
-            Sign In
-          </button>
-        </form>
-      </div>
-    </div>
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In
+            </Button>
+            {/* <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="#" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid> */}
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }
-
-const styles = {
-  container: {
-    backgroundColor: "#fff",
-    padding: "30px",
-    borderRadius: "8px",
-    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-    width: "300px",
-  },
-  heading: {
-    marginBottom: "20px",
-  },
-  formGroup: {
-    marginBottom: "20px",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-  },
-  button: {
-    backgroundColor: "#007bff",
-    color: "#fff",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
-};
-
-export default SignIn;
