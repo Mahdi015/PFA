@@ -17,10 +17,9 @@ import { Alert } from "@mui/material";
 
 // Load environment variables from .env file
 dotenv.config();
-console.log(process.env.REACT_APP_SUPABASE_URL);
 const supabase = createClient(
-  "https://zoyearzeplakofnlpwbl.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpveWVhcnplcGxha29mbmxwd2JsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc2MDEyOTAsImV4cCI6MjAzMzE3NzI5MH0.jT-FjXdISIOixyVn2T-Gsd9B13UFGtz5I6YjLZLyoB8"
+  process.env.REACT_APP_SUPABASE_URL as string,
+  process.env.REACT_APP_SUPABASE_ANON_KEY as string
 );
 
 const defaultTheme = createTheme();

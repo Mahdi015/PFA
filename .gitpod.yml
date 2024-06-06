@@ -4,7 +4,7 @@ tasks:
     command: |
       cp ./front/.env.example ./front/.env
       cp ./back/.env.example ./back/.env
-      echo "API_URL=$(gp url 3001)" >> ./front/.env
+      echo "REACT_APP_API_URL=$(gp url 3001)" >> ./front/.env
       docker-compose --profile dev up -d --build
 
 ports:
