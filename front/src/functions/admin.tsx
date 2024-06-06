@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 export const listUsers = async () =>
-  await axios.get(`${process.env.API_URL}/users`, {});
+  await axios.get(`${process.env.REACT_APP_API_URL}/users`, {});
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (!localStorage.getItem("access_token")) {
