@@ -135,7 +135,15 @@ const AdminLayout = () => {
           <Divider />
           <List component="nav">
             <ListItemButton
-              style={isCurrentPath("/") ? { backgroundColor: "#bbc6d2 " } : {}}
+              style={
+                isCurrentPath("/")
+                  ? {
+                      backgroundColor: "#E6F4FF ",
+                      borderRight: "2px solid rgb(22, 119, 255)",
+                      color: "rgb(22, 119, 255)",
+                    }
+                  : {}
+              }
               onClick={() => navigate("/")}
             >
               <ListItemIcon>
@@ -143,16 +151,17 @@ const AdminLayout = () => {
                   color={isCurrentPath("/") ? "primary" : "inherit"}
                 />
               </ListItemIcon>
-              <ListItemText
-                style={isCurrentPath("/") ? { color: "#1976D2 " } : {}}
-                primary="Tableau de bord"
-              />
+              <ListItemText primary="Tableau de bord" />
             </ListItemButton>
 
             <ListItemButton
               style={
                 isCurrentPath("/list_users")
-                  ? { backgroundColor: "#bbc6d2 " }
+                  ? {
+                      backgroundColor: "#E6F4FF ",
+                      borderRight: "2px solid rgb(22, 119, 255)",
+                      color: "rgb(22, 119, 255)",
+                    }
                   : {}
               }
               onClick={() => navigate("/list_users")}
@@ -162,18 +171,17 @@ const AdminLayout = () => {
                   color={isCurrentPath("/list_users") ? "primary" : "inherit"}
                 />
               </ListItemIcon>
-              <ListItemText
-                style={
-                  isCurrentPath("/list_users") ? { color: "#1976D2 " } : {}
-                }
-                primary="Liste des utilisateurs"
-              />
+              <ListItemText primary="Liste des utilisateurs" />
             </ListItemButton>
 
             <ListItemButton
               style={
                 isCurrentPath("/door_history")
-                  ? { backgroundColor: "#bbc6d2 " }
+                  ? {
+                      backgroundColor: "#E6F4FF ",
+                      borderRight: "2px solid rgb(22, 119, 255)",
+                      color: "rgb(22, 119, 255)",
+                    }
                   : {}
               }
               onClick={() => navigate("/door_history")}
@@ -183,12 +191,7 @@ const AdminLayout = () => {
                   color={isCurrentPath("/door_history") ? "primary" : "inherit"}
                 />
               </ListItemIcon>
-              <ListItemText
-                style={
-                  isCurrentPath("/door_history") ? { color: "#1976D2 " } : {}
-                }
-                primary="Historique d'activité"
-              />
+              <ListItemText primary="Historique d'activité" />
             </ListItemButton>
           </List>
         </Drawer>

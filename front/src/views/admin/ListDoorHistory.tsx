@@ -59,6 +59,47 @@ export default function ListDoorHistory() {
       field: "action",
       headerName: "Action",
       width: 150,
+      renderCell: (params: any) => {
+        return params.value === "active" ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "start",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                backgroundColor: params.value == "GRANTED" ? "green" : "red",
+                borderRadius: 50,
+              }}
+            ></div>
+            {params.value}
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "start",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                backgroundColor: params.value == "GRANTED" ? "green" : "red",
+                borderRadius: 50,
+              }}
+            ></div>
+            {params.value}
+          </div>
+        );
+      },
     },
     {
       field: "actions",
