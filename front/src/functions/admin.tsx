@@ -22,6 +22,11 @@ export const updateUser = async (userData: object) => {
 };
 
 
+export const getStats = async () => 
+  await axios.get(`${process.env.REACT_APP_API_URL}/users/getStats`,{});
+
+
+
 //DoorHistory
 
 export const listDoorHistorys = async () =>

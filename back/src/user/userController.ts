@@ -68,3 +68,71 @@ export const updateUser = async (req: Request, res: Response) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+export const getStats = async (req: Request, res: Response) => {
+  const { data: users, error } = await supabase.from("User").select(`
+            *,
+            DoorHistory (
+                id,
+                action,
+                capture_date
+            )
+        `);
+
+  const getStatistics = (data: any) => {
+    const stats = {
+      user_count: 0,
+      granted_count: 0,
+      forbidden_count: 0,
+      active_user_count: 0,
+      capture_date_distribution: {},
+      capture_last_7_days: 0,
+    } as any;
+
+    const now = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(now.getDate() - 7);
+
+    data.forEach((user: any) => {
+      stats.user_count += 1;
+      if (user.status === "Activated") {
+        stats.active_user_count += 1;
+      }
+      user.DoorHistory.forEach((action: any) => {
+        if (action.action === "GRANTED") {
+          stats.granted_count += 1;
+        } else if (action.action === "FORBIDDEN") {
+          stats.forbidden_count += 1;
+        }
+
+        // Extract date part from capture_date and count occurrences
+        const captureDate = action.capture_date
+          ? new Date(action.capture_date.split("T")[0])
+          : null;
+        if (captureDate) {
+          const dateString = captureDate.toISOString().split("T")[0];
+
+          if (stats.capture_date_distribution[dateString]) {
+            stats.capture_date_distribution[dateString] += 1;
+          } else {
+            stats.capture_date_distribution[dateString] = 1;
+          }
+
+          // Check if the capture date is within the last 7 days
+          if (captureDate >= sevenDaysAgo && captureDate <= now) {
+            stats.capture_last_7_days += 1;
+          }
+        }
+      });
+    });
+
+    return stats;
+  };
+
+const statsData = await getStatistics(users)
+  if (error) {
+    res.status(400).json({ error: error.message });
+  } else {
+    res.json(statsData);
+  }
+};
