@@ -65,7 +65,7 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Connexion
           </Typography>
           <Box
             component="form"
@@ -74,14 +74,14 @@ export default function SignIn() {
             sx={{ mt: 1 }}
           >
             {showLogin && (
-              <Alert severity="error">Invalid login credentials </Alert>
+              <Alert severity="error">Identifiants de connexion invalides </Alert>
             )}{" "}
             <TextField
               margin="normal"
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Adresse e-mail"
               name="email"
               autoComplete="email"
               autoFocus
@@ -93,16 +93,12 @@ export default function SignIn() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Mot de passe"
               type="password"
               id="password"
               onChange={(v) => setPassword(v.target.value)}
               value={password}
               autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
             />
             <Button
               type="submit"
@@ -110,7 +106,7 @@ export default function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Connexion
             </Button>
             {/* <Grid container>
               <Grid item xs>
